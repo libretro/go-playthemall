@@ -33,6 +33,7 @@ type Core struct {
 
 	AudioCallback     *AudioCallback
 	FrameTimeCallback *FrameTimeCallback
+	HWRenderCallback  *HWRenderCallback
 }
 
 // DlSym loads a symbol from a dynamic library
