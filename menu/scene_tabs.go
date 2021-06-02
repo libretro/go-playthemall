@@ -291,6 +291,9 @@ func (tabs sceneTabs) drawHintBar() {
 	w, h := menu.GetFramebufferSize()
 	menu.DrawRect(0, float32(h)-70*menu.ratio, float32(w), 70*menu.ratio, 0, lightGrey)
 
+	vid.DrawTest(100, 100, 320, 240, 30, video.Color{R: 0, G: 0, B: 0, A: 0.25})
+	vid.DrawRect(100, 100, 320, 240, 0.01, video.Color{R: 1, G: 0, B: 1, A: 1})
+
 	_, _, leftRight, a, _, _, _, _, _, guide := hintIcons()
 
 	var stack float32
