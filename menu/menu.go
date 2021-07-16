@@ -16,6 +16,7 @@ var menu *Menu
 
 // Menu is a type holding the menu state, the stack of scenes, tweens, etc
 type Menu struct {
+	focus  int // this is a hack to switch focus between top tabs and the other scenes
 	stack  []Scene
 	icons  map[string]uint32
 	tweens Tweens
@@ -40,6 +41,7 @@ func Init(v *video.Video) *Menu {
 	menu.icons = map[string]uint32{}
 
 	menu.Push(buildTabs())
+	menu.Push(buildHome())
 
 	menu.ContextReset()
 
@@ -50,6 +52,16 @@ func Init(v *video.Video) *Menu {
 // OK on a menu entry.
 func (m *Menu) Push(s Scene) {
 	m.stack = append(m.stack, s)
+	m.focus++
+}
+
+func haveTransparentBackground() bool {
+	for i := 0; i <= len(menu.stack)-1; i++ {
+		if menu.stack[i].Entry().label == "Quick Menu" {
+			return true
+		}
+	}
+	return false
 }
 
 // Render takes care of rendering the menu
@@ -64,11 +76,11 @@ func (m *Menu) Render(dt float32) {
 	w, h := m.GetFramebufferSize()
 	m.ratio = float32(w) / 1920
 
-	if state.CoreRunning {
-		m.DrawRect(0, 0, float32(w), float32(h), 0, bgColor.Alpha(0.85))
-	} else {
-		m.DrawRect(0, 0, float32(w), float32(h), 0, bgColor)
+	c := white
+	if haveTransparentBackground() {
+		c = white.Alpha(0.85)
 	}
+	m.DrawImage(menu.icons["bg"], 0, 0, float32(w), float32(h), 1, 0, c)
 
 	m.tweens.Update(dt)
 
@@ -80,7 +92,7 @@ func (m *Menu) Render(dt float32) {
 
 		m.stack[i].render()
 	}
-	m.stack[currentScreenIndex].drawHintBar()
+	m.stack[m.focus-1].drawHintBar()
 }
 
 // ContextReset uploads the UI images to the GPU.
@@ -116,8 +128,9 @@ func (m *Menu) WarpToQuickMenu() {
 	m.stack = []Scene{}
 	m.Push(buildTabs())
 	m.stack[0].segueNext()
-	m.Push(buildMainMenu())
+	m.Push(buildHome())
 	m.stack[1].segueNext()
 	m.Push(buildQuickMenu())
 	m.tweens.FastForward()
+	menu.focus = len(menu.stack)
 }

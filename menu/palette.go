@@ -9,6 +9,7 @@ import (
 var white = video.Color{R: 1, G: 1, B: 1, A: 1}
 var black = video.Color{R: 0, G: 0, B: 0, A: 1}
 
+var blue = video.Color{R: 0.129, G: 0.441, B: 0.684, A: 1}
 var orange = video.Color{R: 0.8, G: 0.4, B: 0.1, A: 1}
 var cyan = video.Color{R: 0.8784, G: 1, B: 1, A: 1}
 var darkBlue = video.Color{R: 0.1, G: 0.1, B: 0.4, A: 1}
